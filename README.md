@@ -1,6 +1,6 @@
-# Url Shortener API
+# shorten
 
-This is an express js API for URL shortening..
+This is an express js API for URL shortening.
 
 ## Usage
 
@@ -20,7 +20,7 @@ POST /api/url
 
 ```json
 {
-  "url": "https://github.com/pr4j3sh/url-shortener"
+  "url": "https://github.com/pr4j3sh/shorten"
 }
 ```
 
