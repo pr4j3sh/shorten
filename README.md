@@ -1,6 +1,6 @@
 # shorten
 
-This is an express js API for shortening URL.
+This is an express js server API for shortening URL.
 
 ## Usage
 
