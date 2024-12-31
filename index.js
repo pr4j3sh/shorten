@@ -27,56 +27,44 @@ server.get(
   }),
 );
 
-const db = [];
-
-async function count() {
-  const i = db.length + 1;
-  return i.toString();
-}
-
-async function upload(url) {
-  const id = await count();
-  const obj = { id, url };
-  console.log(obj);
-  db.push(obj);
-  return id;
-}
-
 server.post(
-  "/api/url",
+  "/api/shorten",
   asyncHandler(async (req, res) => {
     const { url } = req.body;
     if (!url) {
       throw new Error("url not defined");
     }
-    console.log({ url });
-    const id = await upload(url);
 
     res.status(201).json({
       success: true,
-      url: `${req.protocol}://${req.get("host")}/${id}`,
+      url: "short url",
     });
   }),
 );
 
-async function download(id) {
-  const obj = db.find((item) => item.id === id);
-  return obj ? obj.url : null;
-}
-
 server.get(
-  "/api/:id",
+  "/api/:code",
   asyncHandler(async (req, res) => {
-    const id = req.params.id;
-    if (!id) {
-      throw new Error("id is undefined");
+    const code = req.params.code;
+    if (!code) {
+      throw new Error("code is undefined");
     }
-    const url = await download(id);
-    if (!url) {
-      throw new Error("Url not found");
+
+    // res.redirect(url);
+  }),
+);
+
+server.delete(
+  "/api/:code",
+  asyncHandler(async (req, res) => {
+    const code = req.params.code;
+    if (!code) {
+      throw new Error("code is undefined");
     }
-    console.log({ url });
-    res.redirect(url);
+    res.status(200).json({
+      status: true,
+      message: "Url deleted successfully",
+    });
   }),
 );
 
