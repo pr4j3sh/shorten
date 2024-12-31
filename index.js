@@ -6,6 +6,8 @@ const {
   corsHandler,
 } = require("exhandlers");
 const express = require("express");
+const crypto = require("crypto");
+const { db } = require("./src/lib/utils");
 
 const port = process.env.PORT;
 const hostname = process.env.HOSTNAME;
@@ -31,9 +33,29 @@ server.post(
   "/api/shorten",
   asyncHandler(async (req, res) => {
     const { url } = req.body;
+    // TODO add validation to url
     if (!url) {
       throw new Error("url not defined");
     }
+
+    const hash = crypto
+      .createHash("sha256")
+      .update(url)
+      .digest("base64url")
+      .slice(0, 6);
+
+    console.log({ hash });
+
+    // const hashExists = await db("SELECT * FROM urls WHERE code = $1", [hash]);
+    //
+    // if (hashExists.rows.length > 0) {
+    //   if (hashExists.rows[0].url === url) {
+    //     return res.status(200).json({
+    //       status: "success",
+    //       url: `${req.url}/${hash}`,
+    //     });
+    //   }
+    // }
 
     res.status(201).json({
       success: true,

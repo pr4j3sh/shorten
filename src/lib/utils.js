@@ -1,5 +1,8 @@
 const { postgresHandler } = require("exhandlers");
 
-const pool = postgresHandler(process.env.POSTGRES_URI);
+async function db(text, params, callback) {
+  const pool = await postgresHandler(process.env.POSTGRES_URI);
+  return pool.query(text, params, callback);
+}
 
-module.exports = { pool };
+module.exports = { db };
