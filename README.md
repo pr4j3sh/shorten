@@ -2,6 +2,41 @@
 
 This is an express js server API for shortening URL.
 
+## Installation
+
+```bash
+git clone https://github/pr4j3sh/shorten.git
+cd shorten
+```
+
+```bash
+mv .env.example .env
+```
+
+- Edit `POSTGRES_URI`
+
+- Setup databse
+
+```bash
+psql
+```
+
+```bash
+CREATE DATABASE shorten;
+```
+
+```bash
+\c shorten
+```
+
+```sql
+CREATE TABLE urls (
+id SERIAL PRIMARY KEY,
+url VARCHAR(100),
+code VARCHAR(6),
+);
+```
+
 ## Usage
 
 - Run using `dev`
@@ -12,10 +47,10 @@ npm run dev
 
 ## API Endpoints
 
-- Upload url, returns shortened url
+- Upload url, returns code
 
 ```
-POST /api/url
+POST /api/shorten
 ```
 
 ```json
@@ -27,5 +62,11 @@ POST /api/url
 - Redirect to original url
 
 ```
-GET /api/:id
+GET /api/:code
+```
+
+- Delete an url
+
+```
+DELETE /api/:code
 ```

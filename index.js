@@ -6,8 +6,8 @@ const {
   corsHandler,
 } = require("exhandlers");
 const express = require("express");
-const crypto = require("crypto");
-const { db } = require("./src/lib/utils");
+const { db, generateHash } = require("./src/lib/utils");
+const { validateUrl, validateCode } = require("./src/middlewares/validations");
 
 const port = process.env.PORT;
 const hostname = process.env.HOSTNAME;
@@ -31,6 +31,7 @@ server.get(
 
 server.post(
   "/api/shorten",
+  validateUrl,
   asyncHandler(async (req, res) => {
     const { url } = req.body;
     // TODO add validation to url
@@ -38,51 +39,68 @@ server.post(
       throw new Error("url not defined");
     }
 
-    const hash = crypto
-      .createHash("sha256")
-      .update(url)
-      .digest("base64url")
-      .slice(0, 6);
+    const hash = await generateHash(url);
 
-    console.log({ hash });
+    const urlExists = await db("SELECT * FROM urls WHERE code = $1", [hash]);
 
-    // const hashExists = await db("SELECT * FROM urls WHERE code = $1", [hash]);
-    //
-    // if (hashExists.rows.length > 0) {
-    //   if (hashExists.rows[0].url === url) {
-    //     return res.status(200).json({
-    //       status: "success",
-    //       url: `${req.url}/${hash}`,
-    //     });
-    //   }
-    // }
+    if (urlExists.rows.length > 0) {
+      if (urlExists.rows[0].url === url) {
+        return res.status(200).json({
+          status: "success",
+          url: hash,
+        });
+      } else {
+        const newHash = await generateHash(url + Date.now().toString());
+        await db("INSERT INTO urls(url, code) VALUES($1,$2)", [url, newHash]);
+        return res.status(201).json({
+          success: true,
+          code: newHash,
+        });
+      }
+    }
+
+    await db("INSERT INTO urls(url, code) VALUES($1,$2)", [url, hash]);
 
     res.status(201).json({
       success: true,
-      url: "short url",
+      code: hash,
     });
   }),
 );
 
 server.get(
   "/api/:code",
+  validateCode,
   asyncHandler(async (req, res) => {
     const code = req.params.code;
     if (!code) {
       throw new Error("code is undefined");
     }
 
-    // res.redirect(url);
+    const result = await db("SELECT * FROM urls WHERE code = $1", [code]);
+    if (result.rowCount <= 0) {
+      throw new Error("Url not found");
+    }
+    const url = result.rows[0].url;
+
+    res.redirect(url);
   }),
 );
 
 server.delete(
   "/api/:code",
+  validateCode,
   asyncHandler(async (req, res) => {
     const code = req.params.code;
     if (!code) {
       throw new Error("code is undefined");
     }
+
+    const result = await db("DELETE FROM urls WHERE code = $1", [code]);
+    if (result.rowCount === 0) {
+      throw new Error("Url not found");
+    }
+
     res.status(200).json({
       status: true,
       message: "Url deleted successfully",
