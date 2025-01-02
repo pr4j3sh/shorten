@@ -103,7 +103,7 @@ server.get(
       throw new Error("code is undefined");
     }
 
-    const cache = await client.get(`url:${url}`);
+    const cache = await client.get(`code:${code}`);
     if (cache) {
       return res.redirect(cache);
     }
