@@ -13,7 +13,7 @@ cd shorten
 mv .env.example .env
 ```
 
-- Edit `POSTGRES_URI`
+- Edit `POSTGRES_URI` and `REDIS_URI`
 
 - Setup databse
 

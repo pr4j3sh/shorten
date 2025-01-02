@@ -9,7 +9,7 @@ const validateUrl = asyncHandler(async (req, res, next) => {
     schema.parse(req.body);
     next();
   } catch (error) {
-    return res.status(400).json({ status: false, message: error.errors });
+    return res.status(400).json({ success: false, message: error.errors });
   }
 });
 
@@ -23,7 +23,7 @@ const validateCode = asyncHandler(async (req, res, next) => {
     schema.parse(req.params.code);
     next();
   } catch (error) {
-    return res.status(400).json({ status: false, message: error.errors });
+    return res.status(400).json({ success: false, message: error.errors });
   }
 });
 

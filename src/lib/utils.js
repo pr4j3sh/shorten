@@ -1,10 +1,8 @@
-const { postgresHandler } = require("exhandlers");
+const { initPostgres, initRedis } = require("exhandlers");
 const crypto = require("crypto");
 
-async function db(text, params, callback) {
-  const pool = await postgresHandler(process.env.POSTGRES_URI);
-  return pool.query(text, params, callback);
-}
+const pool = initPostgres(process.env.POSTGRES_URI);
+const client = initRedis(process.env.REDIS_URI);
 
 async function generateHash(url) {
   const hash = crypto
@@ -15,4 +13,4 @@ async function generateHash(url) {
   return hash;
 }
 
-module.exports = { db, generateHash };
+module.exports = { pool, client, generateHash };

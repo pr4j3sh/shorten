@@ -4,9 +4,12 @@ const {
   logHandler,
   asyncHandler,
   corsHandler,
+  postgresHandler,
+  disconnectRedis,
+  redisHandler,
 } = require("exhandlers");
 const express = require("express");
-const { db, generateHash } = require("./src/lib/utils");
+const { pool, generateHash, client } = require("./src/lib/utils");
 const { validateUrl, validateCode } = require("./src/middlewares/validations");
 
 const port = process.env.PORT;
@@ -39,19 +42,37 @@ server.post(
       throw new Error("url not defined");
     }
 
+    const cache = await client.get(`url:${url}`);
+    if (cache) {
+      return res.status(200).json({
+        success: true,
+        code: cache,
+      });
+    }
+
     const hash = await generateHash(url);
 
-    const urlExists = await db("SELECT * FROM urls WHERE code = $1", [hash]);
+    const urlExists = await postgresHandler(
+      pool,
+      "SELECT * FROM urls WHERE code = $1",
+      [hash],
+    );
 
     if (urlExists.rows.length > 0) {
       if (urlExists.rows[0].url === url) {
+        await client.set(`url:${url}`, hash, "EX", 3600);
         return res.status(200).json({
-          status: "success",
-          url: hash,
+          success: true,
+          code: hash,
         });
       } else {
         const newHash = await generateHash(url + Date.now().toString());
-        await db("INSERT INTO urls(url, code) VALUES($1,$2)", [url, newHash]);
+        await postgresHandler(
+          pool,
+          "INSERT INTO urls(url, code) VALUES($1,$2)",
+          [url, newHash],
+        );
+        await client.set(`url:${url}`, newHash, "EX", 3600);
         return res.status(201).json({
           success: true,
           code: newHash,
@@ -59,7 +80,12 @@ server.post(
       }
     }
 
-    await db("INSERT INTO urls(url, code) VALUES($1,$2)", [url, hash]);
+    await postgresHandler(pool, "INSERT INTO urls(url, code) VALUES($1,$2)", [
+      url,
+      hash,
+    ]);
+
+    await client.set(`url:${url}`, hash, "EX", 3600);
 
     res.status(201).json({
       success: true,
@@ -77,11 +103,21 @@ server.get(
       throw new Error("code is undefined");
     }
 
-    const result = await db("SELECT * FROM urls WHERE code = $1", [code]);
+    const cache = await client.get(`url:${url}`);
+    if (cache) {
+      return res.redirect(cache);
+    }
+
+    const result = await postgresHandler(
+      pool,
+      "SELECT * FROM urls WHERE code = $1",
+      [code],
+    );
     if (result.rowCount <= 0) {
       throw new Error("Url not found");
     }
     const url = result.rows[0].url;
+    await client.set(`code:${code}`, url, "EX", 3600);
 
     res.redirect(url);
   }),
@@ -96,9 +132,18 @@ server.delete(
       throw new Error("code is undefined");
     }
 
-    const result = await db("DELETE FROM urls WHERE code = $1", [code]);
+    const result = await postgresHandler(
+      pool,
+      "DELETE FROM urls WHERE code = $1",
+      [code],
+    );
     if (result.rowCount === 0) {
       throw new Error("Url not found");
+    }
+    const cache = await client.get(`code:${code}`);
+    await client.delete(`code:${code}`);
+    if (cache) {
+      await client.delete(`url:${cache}`);
     }
 
     res.status(200).json({
@@ -111,6 +156,8 @@ server.delete(
 server.use(notFoundHandler);
 server.use(errorHandler);
 
-server.listen(port, hostname, () => {
+server.listen(port, hostname, async () => {
+  await redisHandler(client);
   console.log(`server running @ http://${hostname}:${port}`);
 });
+disconnectRedis(client);
