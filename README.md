@@ -74,7 +74,7 @@ DELETE /api/:code
 ## With Docker
 
 ```bash
-docker run --env-file=.env -p 5000:5000 pr4j3sh/shorten:tag
+docker run --env-file=.env -p 5000:5000 pr4j3sh/shorten:v1.0.4
 ```
 
 > `env` file should contain all `.env.example` variables. You can create a separate `.env.docker` and use it here.
