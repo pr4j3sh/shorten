@@ -70,3 +70,11 @@ GET /api/:code
 ```
 DELETE /api/:code
 ```
+
+## With Docker
+
+```bash
+docker run --env-file=.env -p 5000:5000 pr4j3sh/shorten:tag
+```
+
+> `env` file should contain all `.env.example` variables. You can create a separate `.env.docker` and use it here.
