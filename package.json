@@ -15,7 +15,7 @@
     "nodemon": "^3.1.7"
   },
   "dependencies": {
-    "exhandlers": "^1.0.18",
+    "exhandlers": "^1.0.19",
     "express": "^4.21.1",
     "zod": "^3.24.1"
   }

@@ -141,9 +141,9 @@ server.delete(
       throw new Error("Url not found");
     }
     const cache = await client.get(`code:${code}`);
-    await client.delete(`code:${code}`);
+    await client.del(`code:${code}`);
     if (cache) {
-      await client.delete(`url:${cache}`);
+      await client.del(`url:${cache}`);
     }
 
     res.status(200).json({
