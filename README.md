@@ -2,14 +2,41 @@
 
 This is an express js server API for shortening URL.
 
-## Installation
+## API Endpoints
 
-```bash
-git clone https://github/pr4j3sh/shorten.git
-cd shorten
+- Upload url, returns code
+
+```
+POST /api/shorten
 ```
 
-- Setup databse
+```json
+{
+  "url": "https://github.com/pr4j3sh/shorten"
+}
+```
+
+- Redirect to original url
+
+```
+GET /api/:code
+```
+
+- Delete an url
+
+```
+DELETE /api/:code
+```
+
+### Pre-requisites
+
+- Node.js
+- PostgreSQL
+- Docker
+
+## Installation
+
+- Setup database
 
 ```bash
 docker run -d -e POSTGRES_PASSWORD=<password> -p 5001:5432 postgres
@@ -39,6 +66,15 @@ code VARCHAR(6)
 docker run -d -p 5002:6379 redis
 ```
 
+## Usage
+
+### via Source
+
+```bash
+git clone https://github/pr4j3sh/shorten.git
+cd shorten
+```
+
 - Setup environment variables
 
 ```bash
@@ -55,44 +91,57 @@ POSTGRES_URI=postgres://postgres:<password>@host.docker.internal:5001/shorten
 REDIS_URI=redis://host.docker.internal:5002
 ```
 
-## Usage
-
 - Run using `dev`
 
 ```bash
 npm run dev
 ```
 
-## API Endpoints
-
-- Upload url, returns code
-
-```
-POST /api/shorten
-```
-
-```json
-{
-  "url": "https://github.com/pr4j3sh/shorten"
-}
-```
-
-- Redirect to original url
-
-```
-GET /api/:code
-```
-
-- Delete an url
-
-```
-DELETE /api/:code
-```
-
-## With Docker
+### via Docker
 
 ```bash
 docker run --env-file=.env -p 5000:5000 pr4j3sh/shorten:v1.0.4
 ```
 
-> `env` file should contain all `.env.example` variables. You can create a separate `.env.docker` and use it here.
+## via Kubernetes
+
+```bash
+minikube start
+```
+
+- Create `.env.postgres` with the contents
+
+```.env
+POSTGRES_PASSWORD=<password>
+```
+
+```bash
+kubectl create configmap postgres --from-env-file=.env.postgres
+```
+
+- Create `.env.kubernetes` with the contents
+
+```.env
+PORT=5000
+HOSTNAME=0.0.0.0
+ORIGINS="http://${HOSTNAME}:${PORT}"
+POSTGRES_URI=postgres://postgres:<password>@postgres:5001/shorten
+REDIS_URI=redis://redis:5002
+```
+
+```bash
+kubectl create configmap shorten --from-env-file=.env.kubernetes
+```
+
+```bash
+git clone https://github/pr4j3sh/shorten.git
+cd shorten
+```
+
+```bash
+kubectl apply -f db.yaml
+```
+
+```bash
+kubectl apply -f deployment.yaml
+```

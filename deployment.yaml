@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shorten
+spec:
+  selector:
+    matchLabels:
+      app: shorten
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: shorten
+    spec:
+      containers:
+        - name: shorten
+          image: pr4j3sh/shorten:v1.0.5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+          envFrom:
+            - configMapRef:
+                name: shorten
+          ports:
+            - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shorten
+spec:
+  selector:
+    app: shorten
+  type: NodePort
+  ports:
+    - name: shorten
+      protocol: TCP
+      port: 5000
+      targetPort: 5000
