@@ -47,6 +47,14 @@ mv .env.example .env
 
 - Edit `POSTGRES_URI` and `REDIS_URI`
 
+```.env
+PORT=5000
+HOSTNAME=0.0.0.0
+ORIGINS="http://${HOSTNAME}:${PORT}"
+POSTGRES_URI=postgres://postgres:<password>@host.docker.internal:5001/shorten
+REDIS_URI=redis://host.docker.internal:5002
+```
+
 ## Usage
 
 - Run using `dev`
