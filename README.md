@@ -9,16 +9,14 @@ git clone https://github/pr4j3sh/shorten.git
 cd shorten
 ```
 
-```bash
-mv .env.example .env
-```
-
-- Edit `POSTGRES_URI` and `REDIS_URI`
-
 - Setup databse
 
 ```bash
-psql
+docker run -d -e POSTGRES_PASSWORD=<password> -p 5001:5432 postgres
+```
+
+```bash
+psql -h localhost -p 5001 -U postgres
 ```
 
 ```bash
@@ -33,9 +31,21 @@ CREATE DATABASE shorten;
 CREATE TABLE urls (
 id SERIAL PRIMARY KEY,
 url VARCHAR(100),
-code VARCHAR(6),
+code VARCHAR(6)
 );
 ```
+
+```bash
+docker run -d -p 5002:6379 redis
+```
+
+- Setup environment variables
+
+```bash
+mv .env.example .env
+```
+
+- Edit `POSTGRES_URI` and `REDIS_URI`
 
 ## Usage
 
