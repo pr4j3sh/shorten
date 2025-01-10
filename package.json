@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node .",
-    "dev": "nodemon --env-file=.env ."
+    "dev": "nodemon --env-file=.env .",
+    "pro": "nodemon --env-file=.env.production ."
   },
   "keywords": [],
   "author": "",
@@ -15,7 +16,7 @@
     "nodemon": "^3.1.7"
   },
   "dependencies": {
-    "exhandlers": "^1.0.19",
+    "exhandlers": "^1.0.21",
     "express": "^4.21.1",
     "zod": "^3.24.1"
   }

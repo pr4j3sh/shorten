@@ -5,8 +5,6 @@ const {
   asyncHandler,
   corsHandler,
   postgresHandler,
-  disconnectRedis,
-  redisHandler,
 } = require("exhandlers");
 const express = require("express");
 const { pool, generateHash, client } = require("./src/lib/utils");
@@ -156,8 +154,6 @@ server.delete(
 server.use(notFoundHandler);
 server.use(errorHandler);
 
-server.listen(port, hostname, async () => {
-  await redisHandler(client);
+server.listen(port, hostname, () => {
   console.log(`server running @ http://${hostname}:${port}`);
 });
-disconnectRedis(client);

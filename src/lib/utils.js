@@ -1,8 +1,18 @@
 const { initPostgres, initRedis } = require("exhandlers");
 const crypto = require("crypto");
+const { readFileSync } = require("fs");
 
-const pool = initPostgres(process.env.POSTGRES_URI);
-const client = initRedis(process.env.REDIS_URI);
+const pool = initPostgres({
+  connectionString: process.env.POSTGRES_URI,
+  ssl: {
+    rejectUnauthorized: true,
+    ca: readFileSync("./ca.pem").toString(),
+  },
+});
+
+const client = initRedis({
+  url: process.env.REDIS_URI,
+});
 
 async function generateHash(url) {
   const hash = crypto
