@@ -2,6 +2,11 @@
 
 This is an express js server API for shortening URL.
 
+## Features
+
+- Scalable
+- Load Balancing
+
 ## API Endpoints
 
 - Upload url, returns code
