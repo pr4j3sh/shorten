@@ -55,15 +55,16 @@ mv .env.example .env
 - Edit the contents
 
 ```.env
+ENV="pro"
 PORT=5000
 HOSTNAME=0.0.0.0
 ORIGINS="http://${HOSTNAME}:${PORT}"
 POSTGRES_URI=<postgres_uri>
 REDIS_URI=<redis_uri>
-POSTGRES_CERT_PATH="<path/to/ssl_certificate>"
+POSTGRES_CERT_PATH=./certs/ca.pem
 ```
 
-> Sign up and get uris from Aiven(PostgreSQL) along with SSL certificate and Upstash(Redis)
+> Sign up and get URIs from Aiven(PostgreSQL) along with SSL certificate and Upstash(Redis)
 
 - Setup databases
 

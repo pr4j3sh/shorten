@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: shorten
-          image: pr4j3sh/shorten:v1.0.6
+          image: pr4j3sh/shorten:v1.0.7
           resources:
             requests:
               cpu: 100m
@@ -27,7 +27,7 @@ spec:
                 name: shorten
           volumeMounts:
             - name: postgres-cert
-              mountPath: "/usr/src/app/"
+              mountPath: "/usr/src/app/certs/"
               readOnly: true
           ports:
             - containerPort: 5000
