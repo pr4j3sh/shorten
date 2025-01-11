@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: shorten
-          image: pr4j3sh/shorten:v1.0.5
+          image: pr4j3sh/shorten:v1.0.6
           resources:
             requests:
               cpu: 100m
