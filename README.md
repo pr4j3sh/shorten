@@ -30,14 +30,14 @@ DELETE /api/:code
 
 ### Pre-requisites
 
-- Node.js
-- PostgreSQL
-- Redis
-- Docker
-- Kubernetes
-- Minikube
-- Aiven PostgreSQL Database
-- Upstash Redis Database
+- [Node.js](https://nodejs.org/en)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Redis](https://redis.io/)
+- [Docker](https://www.docker.com/)
+- [Kubernetes](https://kubernetes.io/)
+- [Minikube](https://minikube.sigs.k8s.io/docs/)
+- [Aiven PostgreSQL Database](https://aiven.io/)
+- [Upstash Redis Database](https://upstash.com/)
 
 ## Installation
 
