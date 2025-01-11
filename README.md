@@ -36,6 +36,8 @@ DELETE /api/:code
 - Docker
 - Kubernetes
 - Minikube
+- Aiven PostgreSQL Database
+- Upstash Redis Database
 
 ## Installation
 
@@ -50,16 +52,18 @@ cd shorten
 mv .env.example .env
 ```
 
-- Edit `POSTGRES_URI` and `REDIS_URI`
+- Edit the contents
 
 ```.env
 PORT=5000
 HOSTNAME=0.0.0.0
 ORIGINS="http://${HOSTNAME}:${PORT}"
-POSTGRES_URI=postgres://postgres:<password>@host.docker.internal:5001/shorten
-REDIS_URI=redis://host.docker.internal:5002
+POSTGRES_URI=<postgres_uri>
+REDIS_URI=<redis_uri>
 POSTGRES_CERT_PATH="<path/to/ssl_certificate>"
 ```
+
+> Sign up and get uris from Aiven(PostgreSQL) along with SSL certificate and Upstash(Redis)
 
 - Setup databases
 
@@ -99,19 +103,8 @@ minikube start
 kubectl create secret generic postgres-cert --from-file=ca.pem
 ```
 
-- Create `.env.production` with the contents
-
-```.env
-PORT=5000
-HOSTNAME=0.0.0.0
-ORIGINS="http://${HOSTNAME}:${PORT}"
-POSTGRES_URI=<postgres_uri>
-REDIS_URI=<redis_uri>
-POSTGRES_CERT_PATH=<path/to/ssl_certificate>
-```
-
 ```bash
-kubectl create configmap shorten --from-env-file=.env.kubernetes
+kubectl create configmap shorten --from-env-file=.env
 ```
 
 ```bash
