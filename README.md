@@ -93,10 +93,10 @@ redis-cli --tls -u <REDIS_URI>
 
 ### via Source
 
-- Run using `pro`
+- Run using `dev`
 
 ```bash
-npm run pro
+npm run dev
 ```
 
 ### via Kubernetes
