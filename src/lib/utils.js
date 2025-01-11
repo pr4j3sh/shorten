@@ -6,7 +6,7 @@ const pool = initPostgres({
   connectionString: process.env.POSTGRES_URI,
   ssl: {
     rejectUnauthorized: true,
-    ca: readFileSync("./ca.pem").toString(),
+    ca: readFileSync(process.env.POSTGRES_CERT_PATH).toString(),
   },
 });
 

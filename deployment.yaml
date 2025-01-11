@@ -25,8 +25,16 @@ spec:
           envFrom:
             - configMapRef:
                 name: shorten
+          volumeMounts:
+            - name: postgres-cert
+              mountPath: "/usr/src/app/"
+              readOnly: true
           ports:
             - containerPort: 5000
+      volumes:
+        - name: postgres-cert
+          secret:
+            secretName: postgres-cert
 ---
 apiVersion: v1
 kind: Service

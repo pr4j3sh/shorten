@@ -32,43 +32,12 @@ DELETE /api/:code
 
 - Node.js
 - PostgreSQL
+- Redis
 - Docker
+- Kubernetes
+- Minikube
 
 ## Installation
-
-- Setup database
-
-```bash
-docker run -d -e POSTGRES_PASSWORD=<password> -p 5001:5432 postgres
-```
-
-```bash
-psql -h localhost -p 5001 -U postgres
-```
-
-```bash
-CREATE DATABASE shorten;
-```
-
-```bash
-\c shorten
-```
-
-```sql
-CREATE TABLE urls (
-id SERIAL PRIMARY KEY,
-url VARCHAR(100),
-code VARCHAR(6)
-);
-```
-
-```bash
-docker run -d -p 5002:6379 redis
-```
-
-## Usage
-
-### via Source
 
 ```bash
 git clone https://github/pr4j3sh/shorten.git
@@ -89,57 +58,60 @@ HOSTNAME=0.0.0.0
 ORIGINS="http://${HOSTNAME}:${PORT}"
 POSTGRES_URI=postgres://postgres:<password>@host.docker.internal:5001/shorten
 REDIS_URI=redis://host.docker.internal:5002
+POSTGRES_CERT_PATH="<path/to/ssl_certificate>"
 ```
 
-- Run using `dev`
+- Setup databases
 
 ```bash
-npm run dev
+psql <POSTGRES_URI>
 ```
 
-### via Docker
+```sql
+CREATE TABLE urls (
+id SERIAL PRIMARY KEY,
+url VARCHAR(100),
+code VARCHAR(6)
+);
+```
 
 ```bash
-docker run --env-file=.env -p 5000:5000 pr4j3sh/shorten:v1.0.4
+redis-cli --tls -u <REDIS_URI>
 ```
 
-## via Kubernetes
+## Usage
+
+### via Source
+
+- Run using `pro`
+
+```bash
+npm run pro
+```
+
+### via Kubernetes
 
 ```bash
 minikube start
 ```
 
-- Create `.env.postgres` with the contents
-
-```.env
-POSTGRES_PASSWORD=<password>
-```
-
 ```bash
-kubectl create configmap postgres --from-env-file=.env.postgres
+kubectl create secret generic postgres-cert --from-file=ca.pem
 ```
 
-- Create `.env.kubernetes` with the contents
+- Create `.env.production` with the contents
 
 ```.env
 PORT=5000
 HOSTNAME=0.0.0.0
 ORIGINS="http://${HOSTNAME}:${PORT}"
-POSTGRES_URI=postgres://postgres:<password>@postgres:5001/shorten
-REDIS_URI=redis://redis:5002
+POSTGRES_URI=<postgres_uri>
+REDIS_URI=<redis_uri>
+POSTGRES_CERT_PATH=<path/to/ssl_certificate>
 ```
 
 ```bash
 kubectl create configmap shorten --from-env-file=.env.kubernetes
-```
-
-```bash
-git clone https://github/pr4j3sh/shorten.git
-cd shorten
-```
-
-```bash
-kubectl apply -f db.yaml
 ```
 
 ```bash
