@@ -43,9 +43,8 @@ metadata:
 spec:
   selector:
     app: shorten
-  type: NodePort
+  type: ClusterIP
   ports:
     - name: shorten
-      protocol: TCP
       port: 5000
       targetPort: 5000

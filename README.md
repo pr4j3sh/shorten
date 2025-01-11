@@ -111,3 +111,25 @@ kubectl create configmap shorten --from-env-file=.env
 ```bash
 kubectl apply -f deployment.yaml
 ```
+
+```bash
+kubectl apply -f loadbalancer.yaml
+```
+
+Get minikube ip address
+
+```bash
+minikube ip
+```
+
+Now use curl to check server status
+
+```bash
+curl <minikube_ip>:30000/api/check
+```
+
+Delete deployments
+
+```bash
+kubectl delete -f loadbalancer.yaml && kubectl delete -f deployment.yaml && kubectl delete configmap shorten kubectl delete secret postgres-cert
+```
