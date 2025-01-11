@@ -64,7 +64,7 @@ REDIS_URI=<redis_uri>
 POSTGRES_CERT_PATH=./certs/ca.pem
 ```
 
-> Sign up and get URIs from Aiven(PostgreSQL) along with SSL certificate and Upstash(Redis)
+> Sign up and get URIs from [Aiven](https://aiven.io/)(PostgreSQL) along with SSL certificate and [Upstash](https://upstash.com/)(Redis)
 
 - Setup databases
 
