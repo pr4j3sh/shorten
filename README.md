@@ -105,6 +105,8 @@ npm run dev
 minikube start
 ```
 
+- download `ca.pem` from Aiven PostgreSQL Database and place in the root of project directory
+
 ```bash
 kubectl create secret generic postgres-cert --from-file=ca.pem
 ```
@@ -113,28 +115,44 @@ kubectl create secret generic postgres-cert --from-file=ca.pem
 kubectl create configmap shorten --from-env-file=.env
 ```
 
+- start kubernetes metrics-server
+
+```bash
+kubectl apply -f components.yaml
+```
+
+- check metrics-server running
+
+```bash
+kubectl get pods -n kube-system | grep metrics-server
+```
+
+- Deploy shorten
+
 ```bash
 kubectl apply -f deployment.yaml
 ```
+
+- Expose shorten
 
 ```bash
 kubectl apply -f loadbalancer.yaml
 ```
 
-Get minikube ip address
+- Get minikube ip address
 
 ```bash
 minikube ip
 ```
 
-Now use curl to check server status
+- Now use curl to check server status
 
 ```bash
 curl <minikube_ip>:30000/api/check
 ```
 
-Delete deployments
+- Delete deployments
 
 ```bash
-kubectl delete -f loadbalancer.yaml && kubectl delete -f deployment.yaml && kubectl delete configmap shorten kubectl delete secret postgres-cert
+kubectl delete -f loadbalancer.yaml && kubectl delete -f deployment.yaml && kubectl delete configmap shorten kubectl delete secret postgres-cert && kubectl delete -f components.yaml
 ```
