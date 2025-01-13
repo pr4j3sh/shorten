@@ -4,7 +4,7 @@ This is an express js server API for shortening URL.
 
 ## Features
 
-- Scalable
+- Auto Scaling
 - Load Balancing
 
 ## API Endpoints
