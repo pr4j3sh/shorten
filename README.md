@@ -105,6 +105,19 @@ npm run dev
 minikube start
 ```
 
+```bash
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+```
+
+```bash
+helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace
+```
+
+```bash
+minikube addons enable ingress
+```
+
 - download `ca.pem` from Aiven PostgreSQL Database and place in the root of project directory
 
 ```bash
@@ -124,7 +137,7 @@ kubectl apply -f components.yaml
 - check metrics-server running
 
 ```bash
-kubectl get pods -n kube-system | grep metrics-server
+kubectl top nodes
 ```
 
 - Deploy shorten
@@ -145,10 +158,20 @@ kubectl apply -f loadbalancer.yaml
 minikube ip
 ```
 
+```bash
+sudo nvim /etc/hosts
+```
+
+```hosts
+<minikube_ip>   shorten.eleven.me
+```
+
+> save and close file
+
 - Now use curl to check server status
 
 ```bash
-curl <minikube_ip>:30000/api/check
+curl http://shorten.eleven.me/api/check
 ```
 
 - Delete deployments
